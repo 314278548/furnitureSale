@@ -1,6 +1,7 @@
 package club.ming19.furnitureSales.web.controller;
 
 import club.ming19.furnitureSales.domain.*;
+import club.ming19.furnitureSales.page.AjaxResult;
 import club.ming19.furnitureSales.service.IOrderBillService;
 import club.ming19.furnitureSales.service.IUserInfoService;
 import club.ming19.furnitureSales.util.UserContext;
@@ -10,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -112,5 +114,23 @@ public class OrderBillController {
             }
         }
         return billItems;
+    }
+
+    @RequestMapping("/delOrder")
+    @ResponseBody
+    public AjaxResult del(String id) {
+        try {
+            orderBillService.delete(id);
+            return new AjaxResult(true, "删除成功");
+        } catch (RuntimeException e) {
+            return new AjaxResult(e.getMessage());
+        }
+    }
+
+
+    @RequestMapping("/showOrder")
+    public String show(HttpServletRequest request, Long id) {
+        request.setAttribute("bills", orderBillService.getBillByID(id));
+        return "orderBill/show";
     }
 }

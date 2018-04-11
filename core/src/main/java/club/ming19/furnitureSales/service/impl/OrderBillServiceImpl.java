@@ -47,4 +47,17 @@ public class OrderBillServiceImpl implements IOrderBillService {
         List<OrderBill> rows = orderBillMapper.queryBillsByStateAndUid(qo);
         return new PageResult<>(rows, totalCount, qo.getCurrentPage(), qo.getPageSize());
     }
+
+    @Override
+    public void delete(String id) {
+        int delete = orderBillMapper.delete(id);
+        if (delete == 0){
+            throw new RuntimeException("删除失败");
+        }
+    }
+
+    @Override
+    public List<OrderBill> getBillByID(Long id) {
+        return orderBillMapper.getBillByID(id);
+    }
 }

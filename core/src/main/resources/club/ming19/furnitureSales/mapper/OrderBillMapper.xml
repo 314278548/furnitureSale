@@ -31,19 +31,33 @@
         </where>
     </sql>
 
+    <!--made BY ming-->
+    <!-- <select id="queryBillsCountByStateAndUid" resultType="long">
+         SELECT COUNT(*) FROM orderbill o
+         <include refid="condition"/>
+     </select>-->
+
     <select id="queryBillsCountByStateAndUid" resultType="long">
-        SELECT COUNT(*) FROM orderbill o
+        SELECT COUNT(*)
+        FROM orderbill o JOIN orderbillitem i ON i.bill_id = o.id JOIN goods g ON g.id = i.goods_id
         <include refid="condition"/>
     </select>
 
     <resultMap id="baseMap" type="OrderBill" autoMapping="true">
         <id column="id" property="id"/>
+        <association property="shipping" javaType="Shipping" columnPrefix="shipping_" autoMapping="true">
+            <!--<id column="id" property="id"/>-->
+        </association>
         <collection property="items" ofType="OrderBillItem" columnPrefix="item_" autoMapping="true">
             <id column="id" property="id"/>
             <association property="goods" javaType="Goods" columnPrefix="goods_" autoMapping="true">
                 <id column="id" property="id"/>
             </association>
         </collection>
+    </resultMap>
+
+    <resultMap id="bill_item" type="OrderBillItem" autoMapping="true">
+        <id column="id" property="id"></id>
     </resultMap>
 
     <select id="queryBillsByStateAndUid" resultMap="baseMap">
@@ -53,5 +67,17 @@
         <include refid="condition"/>
         ORDER BY o.createTime DESC
         LIMIT #{startIndex},#{pageSize}
+    </select>
+
+    <!--删除订单所用-->
+    <delete id="delete">
+        DELETE FROM OrderBill WHERE id = #{id}
+    </delete>
+    <!--查看订单详情-->
+    <select id="getBillByID" resultMap="baseMap">
+        SELECT o.*,i.id item_id,i.num item_num,i.salePrice item_salePrice,i.amount item_amount,
+        i.goods_id item_goods_id,g.name item_goods_name,g.imgs item_goods_imgs,s.id shipping_id,s.name shipping_name,s.phone shipping_phone,s.address shipping_address
+        FROM orderbill o JOIN orderbillitem i ON i.bill_id = o.id JOIN goods g ON g.id = i.goods_id JOIN shipping s on s.id = o.shipping_id
+        where o.id = #{id}
     </select>
 </mapper>

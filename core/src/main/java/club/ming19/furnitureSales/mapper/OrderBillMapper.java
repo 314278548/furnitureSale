@@ -19,4 +19,8 @@ public interface OrderBillMapper {
     Long queryBillsCountByStateAndUid(OrderBillQueryObject qo);
 
     List<OrderBill> queryBillsByStateAndUid(OrderBillQueryObject qo);
+
+    int delete(String id);
+
+    List<OrderBill> getBillByID(Long id);
 }

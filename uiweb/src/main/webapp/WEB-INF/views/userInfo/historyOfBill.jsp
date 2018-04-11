@@ -6,7 +6,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>已购买的商品-MingMini家具销售</title>
+    <title>个人中心-MingMini家具销售</title>
     <link href="${pageContext.request.contextPath}/img/favicon.ico" rel="shortcut icon"/>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/js/plugin/bootstrap/css/bootstrap.min.css">
@@ -22,7 +22,6 @@
         font-size: 14px;
     }
 </style>
-
 <body>
 <%@ include file="/WEB-INF/views/common/person-header.jsp" %>
 <div class="container" style="padding: 0 8%;min-height: 420px;">
@@ -138,8 +137,26 @@
                     <td>
                         <ul class="list-inline" style="margin-bottom: 0;">
                             <li style="width: 83%;">
-                                <button type="button" class="btn-link">查看详情</button>
-                                <button type="button" class="btn-link">删除订单</button>
+                                <button type="button" class="btn-link" onclick="javascript:show(${bill.id})">查看详情</button>
+                                <button type="button" class="btn-link" onclick="javascript:delBill(${bill.id})">删除订单
+                                </button>
+                                <script type="text/javascript">
+                                    function delBill(id) {
+                                        $.post("${pageContext.request.contextPath}/user/delOrder", {id: id}, function (data) {
+                                            if (data.success) {
+                                                window.location.reload();
+                                            } else {
+                                                layer.alert(data.msg);
+                                            }
+                                        }, "json");
+                                    };
+
+                                    //params: url name
+                                    function show(id) {
+                                        open("${pageContext.request.contextPath}/user/showOrder?id=" + id, "订单号" +Math.random());
+                                    }
+
+                                </script>
                                 <div class="pull-right">
                                     <c:choose>
                                         <c:when test="${bill.state == 0}">
